@@ -1,0 +1,22 @@
+---
+services:
+  devbox:
+    build:
+      context: .
+      ulimits:
+        nofile:
+          soft: 65536
+          hard: 65536
+    volumes:
+      - ./:/app
+    environment:
+      - EBS_VOLUME_DEVICE_NAME=/dev/sdh
+      - WAIT_EBS_VOLUME_FOLDER_RETRTY_INTERVAL=10
+      - WAIT_EBS_VOLUME_FOLDER_MAX_RETRY=10
+      - EBS_FOLDER_PATH=/home/ec2-user/ebs-volume
+    command: sleep infinity
+    ulimits:
+      nofile:
+        soft: "65536"
+        hard: "65536"
+  
