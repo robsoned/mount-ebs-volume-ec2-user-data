@@ -4,4 +4,4 @@ WORKDIR /app
 
 COPY devbox.* ./
 
-RUN devbox shellenv --init-hook >> ~/.profile
+RUN  echo 'eval "$(devbox shellenv)"' >> ~/.profile
