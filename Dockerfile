@@ -4,4 +4,6 @@ WORKDIR /app
 
 COPY devbox.* ./
 
-RUN  echo 'eval "$(devbox shellenv)"' >> ~/.profile
+RUN  devbox install && \
+     devbox shellenv >> ~/.profile && \
+     echo 'eval "$(devbox shellenv)"' >> ~/.bashrc

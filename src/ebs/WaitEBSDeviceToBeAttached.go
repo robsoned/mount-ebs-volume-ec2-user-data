@@ -7,6 +7,9 @@ import (
 )
 
 func WaitEBSDeviceToBeAttached(deviceName string, retryInterval int, maxRetries int) error {
+
+	fmt.Printf("Waiting for EBS volume %s to be attached.\n", deviceName)
+
 	for i := 1; i <= maxRetries; i++ {
 		if _, err := os.Stat(deviceName); err == nil {
 			fmt.Printf("EBS volume %s is now available.\n", deviceName)

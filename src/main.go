@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"strconv"
 
@@ -10,17 +11,19 @@ import (
 
 const EbsVolumeDeviceNameEnvKey = "EBS_VOLUME_DEVICE_NAME"
 
-// const ebsFolderPathEnvKey = "EBS_FOLDER_PATH"
+const ebsFolderPathEnvKey = "EBS_FOLDER_PATH"
 const waitEBSVolumeFolderRetryIntervalEnvKey = "WAIT_EBS_VOLUME_FOLDER_RETRTY_INTERVAL"
 const waitEBSVolumeFolderMaxRetryEnvKey = "WAIT_EBS_VOLUME_FOLDER_MAX_RETRY"
 
 func main() {
 
-	// ebsFolderPath, err := getEBSFolterPath()
+	ebsFolderPath, err := getEBSFolterPath()
 
-	// if err != nil {
-	// 	panic(err)
-	// }
+	if err != nil {
+		panic(err)
+	}
+
+	ebs.CreateEBSFolder(ebsFolderPath)
 
 	ebsVolumeDiviceName, err := getEBSVolumeDeviceName()
 
@@ -45,18 +48,38 @@ func main() {
 
 	ebs.WaitEBSDeviceToBeAttached(ebsVolumeDiviceName, waitEBSVolumeFolderRetryInterval, waitEBSVolumeFolderMaxRetry)
 
+	isMounted, err := ebs.CheckIfVolumeIsMounted(ebsFolderPath)
+
+	if err != nil {
+
+		panic(err)
+	}
+
+	if isMounted {
+		fmt.Printf("Volume is mounted at %s\n", ebsFolderPath)
+		return
+	} else {
+		fmt.Printf("Volume is not mounted at %s\n", ebsFolderPath)
+	}
+
+	err = ebs.CreateFileSystem(ebsVolumeDiviceName, ebsFolderPath)
+
+	if err != nil {
+		panic(err)
+	}
+
 }
 
-// func getEBSFolterPath() (string, error) {
+func getEBSFolterPath() (string, error) {
 
-// 	ebsFolderPath, error := getEnvironmetVariable(ebsFolderPathEnvKey)
+	ebsFolderPath, error := getEnvironmetVariable(ebsFolderPathEnvKey)
 
-// 	if error != nil {
-// 		return "", error
-// 	}
+	if error != nil {
+		return "", error
+	}
 
-// 	return ebsFolderPath, nil
-// }
+	return ebsFolderPath, nil
+}
 
 func getEBSVolumeDeviceName() (string, error) {
 
