@@ -68,6 +68,12 @@ func main() {
 		panic(err)
 	}
 
+	err = ebs.MountVolume(ebsVolumeDiviceName, ebsFolderPath)
+
+	if err != nil {
+		panic(err)
+	}
+
 }
 
 func getEBSFolterPath() (string, error) {
